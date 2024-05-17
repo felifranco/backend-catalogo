@@ -46,6 +46,15 @@ Fuente: [https://stateofjs.com/en-US](https://2022.stateofjs.com/en-US/other-too
 - [Base de datos](#base-de-datos)
   - [TypeORM Integration](#typeorm-integration)
   - [Importar TypeOrmModule](#importar-typeormmodule)
+- [Entidades](#entidades)
+  - [Usuarios](#usuarios)
+  - [Productos](#productos)
+  - [Importar entidades](#importar-entidades)
+- [Swagger](#swagger)
+  - [Instalación paquete `@nestjs/swagger`](#instalación-paquete-nestjsswagger)
+  - [Importar SwaggerModule](#importar-swaggermodule)
+  - [Modificar DTOs](#modificación-dtos)
+  - [Modificación de los controladores](#modificación-de-los-controladores)
 
 ## Creación del proyecto NestJS
 
@@ -281,4 +290,103 @@ import { Product } from './products/entities/product.entity';
   providers: [AppService],
 })
 export class AppModule {}
+```
+
+## Swagger
+
+Se utilizará la especificación **OpenAPI** para describir los APIs RESTful disponibles, para eso se utilizará el módulo `@nestjs/swagger`.
+
+### Instalación paquete `@nestjs/swagger`
+
+Dentro de la carpeta del proyecto ejecutar:
+
+```shell
+npm install --save @nestjs/swagger
+```
+
+### Importar SwaggerModule
+
+Al finalizar la instalación del paquete, importar el módulo `SwaggerModule` y `DocumentBuilder` en el archivo [src/main.ts](src/main.ts). La importación será similar a la siguiente:
+
+```ts
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+import configurations from './config/configurations';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+
+  const config = new DocumentBuilder()
+    .setTitle('RESTful API for Users and Products')
+    .setDescription(
+      'Endpoints disponibles para el manejo de usuarios y productos.',
+    )
+    .setVersion('1.0')
+    .addTag('Desafío')
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('', app, document);
+
+  app.enableCors();
+
+  await app.listen(configurations().appPort);
+}
+bootstrap();
+
+//.env values
+console.log('CONFIGURATIONS');
+console.log(configurations());
+```
+
+Notar que se ingresó la información que se visualizará en la página de Swagger. Title, Description, Version y Tag.
+
+### Modificación DTOs
+
+Para Swagger, los DTOs definen los campos y tipo de dato que puede ingresar en cada EndPoint. Tener definida cada propiedad de la clase permitirá que esa información sea visible desde Swagger. A cada DTO se le agrega la propiedad `@ApiProperty()` sobre la declaración de la propiedad. Ejemplo de un DTO
+
+```ts
+import { ApiProperty } from '@nestjs/swagger';
+
+export class CreateUserDto {
+  @ApiProperty()
+  username: string;
+
+  @ApiProperty()
+  password: string;
+
+  @ApiProperty()
+  name: string;
+}
+```
+
+**DTOs modificados**:
+
+- [src/users/dto/create-user.dto.ts](src/users/dto/create-user.dto.ts)
+- [src/users/dto/update-user.dto.ts](src/users/dto/update-user.dto.ts)
+- [src/products/dto/create-product.dto.ts](src/products/dto/create-product.dto.ts)
+- [src/products/dto/update-product.dto.ts](src/products/dto/update-product.dto.ts)
+
+### Modificación de los controladores
+
+Se les agregará los decoradores `ApiTags` y `ApiResponse` de Swagger a los controladores [src/users/users.controller.ts](src/users/users.controller.ts) y [src/products/products.controller.ts](src/products/products.controller.ts). _ApiTags_ agrupa los endpoints con el valor del decorador, para los usuarios será _Users_ por ejemplo. _ApiResponse_ define los códigos con los que responderá el endpoint y la descripción.
+
+```ts
+...
+import { UpdateUserDto } from './dto/update-user.dto';
+import { ApiTags, ApiResponse } from '@nestjs/swagger';
+
+@ApiTags('Users')
+@Controller('users')
+export class UsersController {
+  constructor(private readonly usersService: UsersService) {}
+
+  @Post()
+  @ApiResponse({ status: 201, description: 'Creación exitosa.' })
+  @ApiResponse({ status: 401, description: 'No autorizado.' })
+  create(@Body() createUserDto: CreateUserDto) {
+    return this.usersService.create(createUserDto);
+  }
+...
 ```
