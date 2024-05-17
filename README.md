@@ -390,3 +390,7 @@ export class UsersController {
   }
 ...
 ```
+
+## Servicios y Utilidades
+
+Se agregan las operaciones `CRUD` a los servicios [src/users/users.service.ts](src/users/users.service.ts) y [src/products/products.service.ts](src/products/products.service.ts). Cada operación sigue _estándares_ de desarrollo y reutilización de código a traves de librerías propias. Por ejemplo, se define un estándar de respuesta para cada endpoint y en lugar de escribir lo mismo para cada función se reutilizan los métodos de la librería [src/utils/response.ts](src/utils/response.ts); con esto también definimos un formato de respuesta para todos los endpoints que utilicen la librería.
