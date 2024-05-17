@@ -43,6 +43,9 @@ Fuente: [https://stateofjs.com/en-US](https://2022.stateofjs.com/en-US/other-too
     - [Importar ConfgModule](#importar-configmodule)
     - [Archivo de configuración personalizado](#archivo-de-configuración-personalizado)
     - [Archivo `configurations.ts`](#archivo-configurationsts)
+- [Base de datos](#base-de-datos)
+  - [TypeORM Integration](#typeorm-integration)
+  - [Importar TypeOrmModule](#importar-typeormmodule)
 
 ## Creación del proyecto NestJS
 
@@ -152,4 +155,62 @@ import configurations from './config/configurations';
   providers: [AppService],
 })
 export class AppModule {}
+```
+
+## Base de datos
+
+Para este proyecto se decidió utilizar **PostgreSQL**, los detalles de la base de datos se encuentran en [postgresql.md](postgresql.md).
+
+### TypeORM Integration
+
+Se utilizará el paquete `@nestjs/typeorm` ya que se encuentra dentro de los recursos provistos por NestJS, además, éste es un ORM maduro escrito en TypeScript.
+
+```shell
+npm install --save @nestjs/typeorm typeorm pg
+```
+
+el parámetro `pg` indica que se utilizará `PostgreSQL`.
+
+### Importar TypeOrmModule
+
+Tal y como se hizo con [`ConfigModule`](#configmodule---environments), al finalizar la instalación se debe de importar el paquete `TypeOrmModule` al módulo principal [src/app.module.ts](src/app.module.ts). Se hace un **import** y luego se agrega al **array imports**:
+
+```ts
+import { Module } from '@nestjs/common';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { ConfigModule } from '@nestjs/config';
+import configurations from './config/configurations';
+import { TypeOrmModule } from '@nestjs/typeorm';
+
+@Module({
+  imports: [
+    ConfigModule.forRoot({
+      load: [configurations],
+    }),
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: process.env.DB_HOST,
+      port: parseInt(process.env.DB_PORT, 10),
+      username: process.env.DB_USER,
+      password: process.env.DB_PASS,
+      database: process.env.DB_DATABASE,
+      entities: [],
+      synchronize: true,
+    }),
+  ],
+  controllers: [AppController],
+  providers: [AppService],
+})
+export class AppModule {}
+```
+
+Notar que los valores se obtienen del archivo `.env` por lo que ahí deben de ser ingresados. Por ejemplo
+
+```
+DB_HOST=172.17.0.2
+DB_PORT=5432
+DB_USER=postgres
+DB_PASS=pass123
+DB_DATABASE=postgres
 ```
