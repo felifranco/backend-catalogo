@@ -214,3 +214,71 @@ DB_USER=postgres
 DB_PASS=pass123
 DB_DATABASE=postgres
 ```
+
+## Entidades
+
+### Usuarios
+
+Creamos los recursos desde `Nest CLI` para los usuarios. En la raíz del proyecto ejecutamos:
+
+```
+nest generate resource users
+```
+
+**DEFINIR**:
+
+- Los campos que tendrá la entidad User en el archivo [src/users/entities/user.entity.ts](src/users/entities/user.entity.ts).
+- Los campos que se utilizarán para la transferencia de información (DTO) en los archivos [src/users/dto/create-user.dto.ts](src/users/dto/create-user.dto.ts) y [src/users/dto/update-user.dto.ts](src/users/dto/update-user.dto.ts). Aquí también se deberán colocar los decoradores de Swagger, mas adelante se detallará.
+
+### Productos
+
+Creamos los recursos desde `Nest CLI` para los productos. En la raíz del proyecto ejecutamos:
+
+```
+nest generate resource products
+```
+
+**DEFINIR**:
+
+- Los campos que tendrá la entidad Product en el archivo [src/products/entities/product.entity.ts](src/products/entities/product.entity.ts).
+- Los campos que se utilizarán para la transferencia de información (DTO) en los archivos [src/products/dto/create-product.dto.ts](src/products/dto/create-product.dto.ts) y [src/products/dto/update-product.dto.ts](src/products/dto/update-product.dto.ts). Aquí también se deberán colocar los decoradores de Swagger, mas adelante se detallará.
+
+### Importar entidades
+
+Luego de ejecutar los comandos anteriores, `Nest CLI` hace una importación automática de los módulos secundarios al módulo principal [src/app.module.ts](src/app.module.ts). El módulo TypeORM también debe tener importadas las entities por lo que se importarán y agregarán al array `entities`.
+
+```ts
+import { Module } from '@nestjs/common';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { ConfigModule } from '@nestjs/config';
+import configurations from './config/configurations';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { UsersModule } from './users/users.module';
+import { ProductsModule } from './products/products.module';
+import { User } from './users/entities/user.entity';
+import { Product } from './products/entities/product.entity';
+
+@Module({
+  imports: [
+    ConfigModule.forRoot({
+      load: [configurations],
+    }),
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: process.env.DB_HOST,
+      port: parseInt(process.env.DB_PORT, 10),
+      username: process.env.DB_USER,
+      password: process.env.DB_PASS,
+      database: process.env.DB_DATABASE,
+      entities: [User, Product],
+      synchronize: true,
+    }),
+    UsersModule,
+    ProductsModule,
+  ],
+  controllers: [AppController],
+  providers: [AppService],
+})
+export class AppModule {}
+```
