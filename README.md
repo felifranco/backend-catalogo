@@ -22,6 +22,46 @@
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
+# EJECUCIÓN
+
+## Archivo de variables
+
+Antes de ejecutar el proyecto es importante asegurarse de tener el archivo `.env` en la raíz del proyecto con las variables de entorno. Ejemplo:
+
+```
+APP_PORT=3000
+
+DB_HOST=172.17.0.3
+DB_PORT=5432
+DB_USER=postgres
+DB_PASS=pass123
+DB_DATABASE=postgres
+```
+
+Más información en las secciones [Archivo `.env`](#archivo-env) e [Importar TypeOrmModule](#importar-typeormmodule) para el detalle de cada variable.
+
+## Instalar dependencias
+
+Instalar todas las dependencias agregadas en `package.json`
+
+```shell
+npm install
+```
+
+## Ejecución del proyecto
+
+```shell
+npm run start
+```
+
+Luego de iniciado el proyecto se podrá visualizar la definición y documentación de los enpoints en la siguiente URL
+
+```
+http://localhost:3000/
+```
+
+No olvidar agregar el puerto de publicación a la URL.
+
 # Acerca del proyecto
 
 Se utilizará el framework [NestJS](https://nestjs.com/) para cubrir las necesidades de back-end de la aplicación, se ha elegido este proyecto como alternativa al framework [ExpressJS](https://expressjs.com/), que ya es muy conocido y utilizado. En los listados de "Best NodeJS Frameworks" siempre me aparecía _NestJS_ como uno de los mejores por lo que se consideró para utilizar en este proyecto. Además, en el proyecto se utiliza TypeScript como lenguaje de programación y no es utilizado en ninguno de los otros proyectos.
