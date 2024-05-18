@@ -14,9 +14,19 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto) {
     try {
+      const saved = await this.userRepo.findOneBy({
+        username: createUserDto.username,
+      });
+
+      if (saved) {
+        throw new Error(
+          `El usuario '${createUserDto.username}' ya se encuentra registrado.`,
+        );
+      }
+
       const newUser = this.userRepo.create(createUserDto);
       const result = await this.userRepo.save(newUser);
-      return SuccessfulProcess(result);
+      return SuccessfulProcess(result, 'Usuario creado exitosamente.');
     } catch (exception) {
       return ErrorProcess(exception.message, null);
     }
@@ -61,7 +71,7 @@ export class UsersService {
       }
 
       const result = await this.userRepo.save(updatedUser);
-      return SuccessfulProcess(result);
+      return SuccessfulProcess(result, 'Usuario actualizado exitosamente');
     } catch (exception) {
       return ErrorProcess(exception.message, null);
     }
@@ -75,7 +85,7 @@ export class UsersService {
 
       const result = await this.userRepo.remove(deletedUser);
 
-      return SuccessfulProcess(result);
+      return SuccessfulProcess(result, 'Usuario eliminado exitosamente');
     } catch (exception) {
       return ErrorProcess(exception.message, null);
     }

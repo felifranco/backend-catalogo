@@ -1,7 +1,7 @@
-export function SuccessfulProcess(data: any) {
+export function SuccessfulProcess(data: any, message?: string) {
   return {
     valid: true,
-    message: 'Operación exitosa',
+    message: message ? message : 'Operación exitosa',
     data: data,
   };
 }

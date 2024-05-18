@@ -10,6 +10,7 @@ import {
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { BulkInsertProductDto } from './dto/bulk-insert-product.dto';
 import { ApiTags, ApiResponse } from '@nestjs/swagger';
 
 @ApiTags('Products')
@@ -50,5 +51,12 @@ export class ProductsController {
   @ApiResponse({ status: 401, description: 'No autorizado.' })
   remove(@Param('id') id: string) {
     return this.productsService.remove(+id);
+  }
+
+  @Post('/bulk-insert')
+  @ApiResponse({ status: 201, description: 'Creación exitosa.' })
+  @ApiResponse({ status: 401, description: 'No autorizado.' })
+  bulkInsert(@Body() bulkInsertProductDto: BulkInsertProductDto) {
+    return this.productsService.bulkInsert(bulkInsertProductDto);
   }
 }

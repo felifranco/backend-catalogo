@@ -47,6 +47,7 @@ Fuente: [https://stateofjs.com/en-US](https://2022.stateofjs.com/en-US/other-too
   - [TypeORM Integration](#typeorm-integration)
   - [Importar TypeOrmModule](#importar-typeormmodule)
 - [Entidades](#entidades)
+  - [Autenticación](#autenticación)
   - [Usuarios](#usuarios)
   - [Productos](#productos)
   - [Importar entidades](#importar-entidades)
@@ -55,6 +56,8 @@ Fuente: [https://stateofjs.com/en-US](https://2022.stateofjs.com/en-US/other-too
   - [Importar SwaggerModule](#importar-swaggermodule)
   - [Modificar DTOs](#modificación-dtos)
   - [Modificación de los controladores](#modificación-de-los-controladores)
+- [Servicios y Utilidades](#servicios-y-utilidades)
+- [Importación de productos](#importación-de-productos)
 
 ## Creación del proyecto NestJS
 
@@ -226,6 +229,14 @@ DB_DATABASE=postgres
 
 ## Entidades
 
+### Autenticación
+
+Creamos los recursos desde `Nest CLI` para la autenticación de usuarios. En la raíz del proyecto ejecutamos:
+
+```
+nest generate resource auth
+```
+
 ### Usuarios
 
 Creamos los recursos desde `Nest CLI` para los usuarios. En la raíz del proyecto ejecutamos:
@@ -394,3 +405,7 @@ export class UsersController {
 ## Servicios y Utilidades
 
 Se agregan las operaciones `CRUD` a los servicios [src/users/users.service.ts](src/users/users.service.ts) y [src/products/products.service.ts](src/products/products.service.ts). Cada operación sigue _estándares_ de desarrollo y reutilización de código a traves de librerías propias. Por ejemplo, se define un estándar de respuesta para cada endpoint y en lugar de escribir lo mismo para cada función se reutilizan los métodos de la librería [src/utils/response.ts](src/utils/response.ts); con esto también definimos un formato de respuesta para todos los endpoints que utilicen la librería.
+
+## Importación de productos
+
+Al recurso [Productos](#productos) se le agregó el servicio para ingresar datos en lote. La función `bulkInsert` recibe una matríz de productos. El servicios esta disponible en el endpoint `/products/bulk-insert`.

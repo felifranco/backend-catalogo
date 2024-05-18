@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { BulkInsertProductDto } from './dto/bulk-insert-product.dto';
 import { Product } from './entities/product.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -18,7 +19,25 @@ export class ProductsService {
       const newProduct = this.productRepo.create(createProductDto);
       const result = await this.productRepo.save(newProduct);
 
-      return SuccessfulProcess(result);
+      return SuccessfulProcess(result, 'Producto creado exitosamente');
+    } catch (exception) {
+      return ErrorProcess(exception.message, null);
+    }
+  }
+
+  async bulkInsert(bulkInsertProductDto: BulkInsertProductDto) {
+    try {
+      const products: CreateProductDto[] = [];
+      for (
+        let index = 0;
+        index < bulkInsertProductDto.products.length;
+        index++
+      ) {
+        const product = bulkInsertProductDto.products[index];
+        products.push(this.productRepo.create(product));
+      }
+      const result = await this.productRepo.save(products);
+      return SuccessfulProcess(result, 'Productos agregados exitosamente');
     } catch (exception) {
       return ErrorProcess(exception.message, null);
     }
@@ -87,7 +106,7 @@ export class ProductsService {
       }
 
       const result = await this.productRepo.save(updatedProduct);
-      return SuccessfulProcess(result);
+      return SuccessfulProcess(result, 'Producto actualizado exitosamente');
     } catch (exception) {
       return ErrorProcess(exception.message, null);
     }
@@ -100,7 +119,7 @@ export class ProductsService {
       });
 
       const result = await this.productRepo.remove(deletedProduct);
-      return SuccessfulProcess(result);
+      return SuccessfulProcess(result, 'Producto eliminado exitosamente');
     } catch (exception) {
       return ErrorProcess(exception.message, null);
     }

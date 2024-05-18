@@ -5,30 +5,30 @@ export class Product {
   @PrimaryGeneratedColumn()
   id_product: number;
 
-  @Column()
+  @Column({ nullable: true })
   handle: string;
 
-  @Column()
+  @Column({ nullable: true })
   title: string;
 
-  @Column()
+  @Column({ nullable: true })
   description: string;
 
-  @Column()
+  @Column({ nullable: true, type: 'bigint' })
   sku: number;
 
-  @Column()
+  @Column({ nullable: true, type: 'decimal' })
   grams: number;
 
-  @Column()
+  @Column({ nullable: true })
   stock: number;
 
-  @Column()
+  @Column({ nullable: true, type: 'decimal' })
   price: number;
 
-  @Column()
+  @Column({ nullable: true, type: 'decimal' })
   compare_price: number;
 
-  @Column()
+  @Column({ nullable: true, type: 'bigint' })
   barcode: number;
 }
