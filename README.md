@@ -26,7 +26,7 @@
 
 ## Archivo de variables
 
-Antes de ejecutar el proyecto es importante asegurarse de tener el archivo `.env` en la raíz del proyecto con las variables de entorno. Ejemplo:
+Antes de ejecutar el proyecto es importante asegurarse de tener el archivo `.env` en la raíz con las variables de entorno. Ejemplo:
 
 ```
 APP_PORT=3000
@@ -39,6 +39,8 @@ DB_DATABASE=postgres
 ```
 
 Más información en las secciones [Archivo `.env`](#archivo-env) e [Importar TypeOrmModule](#importar-typeormmodule) para el detalle de cada variable.
+
+**IMPORTANTE**: Si no se tiene una base de datos **PostgreSQL** se puede iniciar una con Docker. Los detalles de la base de datos se encuentran en [postgresql.md](postgresql.md)
 
 ## Instalar dependencias
 
